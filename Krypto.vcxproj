@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -98,14 +98,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="core_functions.cpp" />
+    <ClCompile Include="key_schedule.cpp" />
     <ClCompile Include="src\aes.cpp" />
-    <ClCompile Include="src\hash.cpp" />
     <ClCompile Include="src\main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hash.h" />
     <ClInclude Include="headers\aes.h" />
-    <ClInclude Include="headers\krypto.h" />
+    <ClInclude Include="headers\core_functions.h" />
+    <ClInclude Include="key_schedule.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -18,21 +18,24 @@
     <ClCompile Include="src\aes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\hash.cpp">
+    <ClCompile Include="src\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="core_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="key_schedule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="hash.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="headers\aes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="headers\krypto.h">
+    <ClInclude Include="headers\core_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="key_schedule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
