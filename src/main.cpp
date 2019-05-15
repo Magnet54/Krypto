@@ -52,6 +52,7 @@ int main() {
 	aes Test("C:\\input", key);
 	Test.GenerateKey();
 	Test.Encrypt();
+	Test.Decrypt();
 	Test.GenerateFile("C:\\Temp\\encrypt.pdf");
 	//system("pause");
 	return 0;

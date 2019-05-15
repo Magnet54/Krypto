@@ -102,19 +102,38 @@ void aes::Encrypt() {
 		
 		cout << "Ronde: " << round << endl;
 		SubBytes(data, sbox);
-		ShiftRows(data);
-		MixColumns(data);
+		ShiftRows(data,Forward);
+		MixColumns(data,encrypt_matrix);
 		AddRoundKey(data, *current_key);
 		current_key = current_key->next;
 
 	}
 
 	SubBytes(data,sbox);
-	ShiftRows(data);
+	ShiftRows(data,Forward);
 	AddRoundKey(data, *current_key);
 }
 
 void aes::Decrypt() {
+	cout << "Lancement de la procédure de decryptage" << endl;
+
+	Block* current_key = &key;
+	while (current_key->next != nullptr) current_key = current_key->next;
+	AddRoundKey(data, *current_key);
+
+	current_key = current_key->previous;
+
+	for (int inv_round = 0; inv_round < 13; inv_round++) {
+		ShiftRows(data, Reverse);
+		SubBytes(data, invbox);
+		AddRoundKey(data, *current_key);
+		MixColumns(data, decrypt_matrix);
+		current_key = current_key->previous;
+	}
+
+	ShiftRows(data, Reverse);
+	SubBytes(data, invbox);
+	AddRoundKey(data, *current_key);
 
 }
 
