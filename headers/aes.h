@@ -23,9 +23,9 @@ public:
 
 	aes(char* path,uint8_t* key);
 	~aes();
-	void Encrypt(Block& current_block);
+	void Encrypt(Block* current_block,Block* stop_block);
 	void LaunchEncryption();
-	void Decrypt(Block& current_block);
+	void Decrypt(Block* current_block,Block* stop_block);
 	void LaunchDecryption();
 	void GenerateKey();
 	void GenerateFile(char* path);

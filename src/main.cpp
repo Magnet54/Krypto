@@ -17,9 +17,9 @@ int main() {
 		0x18,0x19,0x1a,0x1b,
 		0x1c,0x1d,0x1e,0x1f };
 
-	aes Test("C:\\Temp\\encrypted.wmv", key);
-	//Test.LaunchEncryption();
-	//Test.GenerateFile("C:\\Temp\\encrypted.wmv");
+	aes Test("C:\\titre.wmv", key);
+	Test.LaunchEncryption();
+	Test.GenerateFile("C:\\Temp\\encrypted.wmv");
 	Test.LaunchDecryption();
 	Test.GenerateFile("C:\\Temp\\decrypted.wmv");
 	//system("pause");

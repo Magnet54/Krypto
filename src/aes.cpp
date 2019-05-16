@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <thread>
 #include "../key_schedule.h"
 #include "../headers/core_functions.h"
 
@@ -88,14 +89,35 @@ void aes::GenerateKey() {
 }
 
 void aes::LaunchEncryption() {
+	cout << "Lancement du cryptage " << endl;
 
-	cout << "Lancement du cryptage" << endl;
+	int threads_capability = thread::hardware_concurrency();
+	if (threads_capability == 0) threads_capability = 1;
 
-	Block* current_block = &data;
+	int blocks_per_thread = bytes_nb / (threads_capability*DIM*DIM);
 
-	while (current_block->next != nullptr) {
-		Encrypt(*current_block);
-		current_block = current_block->next;
+	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
+	blocks_per_thread = bytes_nb / (threads*DIM*DIM);
+
+
+	vector<thread> threads_list;
+	//thread threads_list[threads];
+	Block* stop_block=&data;
+	Block* initial_block = &data;
+	int block_nb;
+	for (int i = 0; i < threads; i++) {
+		block_nb = 0;
+		while (block_nb < blocks_per_thread && stop_block->next!=nullptr) {
+			stop_block = stop_block->next;
+			block_nb++;
+		}
+		threads_list.push_back(thread(&aes::Encrypt,this,initial_block, stop_block));
+		initial_block = stop_block->next;
+	}
+
+	for (int i = 0; i < threads;i++) {
+		threads_list[i].join();
+
 	}
 
 }
@@ -104,59 +126,88 @@ void aes::LaunchDecryption() {
 
 	cout << "Lancement du decryptage" << endl;
 
-	Block* current_block = &data;
+	int threads_capability =thread::hardware_concurrency();
+	if (threads_capability == 0) threads_capability = 1;
 
-	while (current_block->next != nullptr) {
-		Decrypt(*current_block);
+	int blocks_per_thread = bytes_nb / (threads_capability*DIM*DIM);
+
+	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
+
+	vector<thread> threads_list;
+	Block* stop_block=&data;
+	Block* initial_block = &data;
+	int block_nb;
+	for (int i = 0; i < threads; i++) {
+
+		block_nb = 0;
+		while (block_nb < blocks_per_thread && stop_block->next!=nullptr) {
+			stop_block =stop_block->next;
+			block_nb++;
+		}
+		threads_list.push_back(thread(&aes::Decrypt, this, initial_block, stop_block));
+		initial_block = stop_block->next;
+	}
+
+	for (int i = 0; i < threads; i++) {
+		threads_list[i].join();
+
+	}
+}
+
+void aes::Encrypt(Block* current_block,Block* stop_block) {
+
+	Block* current_key;
+	while (current_block != stop_block) {
+
+		current_key= &key;
+		AddRoundKey(*current_block, *current_key);
+		current_key = current_key->next;
+
+
+		for (int round = 0; round < 13; round++) {
+
+			SubBytes(*current_block, sbox);
+			ShiftRows(*current_block, Forward);
+			MixColumns(*current_block, encrypt_matrix);
+			AddRoundKey(*current_block, *current_key);
+			current_key = current_key->next;
+
+		}
+
+		SubBytes(*current_block, sbox);
+		ShiftRows(*current_block, Forward);
+		AddRoundKey(*current_block, *current_key);
+
 		current_block = current_block->next;
 	}
 }
 
-void aes::Encrypt(Block& current_block) {
+void aes::Decrypt(Block* current_block,Block* stop_block) {
+
+	Block* current_key;
+	while (current_block != stop_block) {
 
 
+		current_key = &key;
+		while (current_key->next != nullptr) current_key = current_key->next;
+		AddRoundKey(*current_block, *current_key);
 
-	Block* current_key = &key;
-	AddRoundKey(current_block, *current_key);
-	current_key = current_key->next;
-
-
-	for (int round = 0; round < 13;round++) {
-		
-		SubBytes(current_block, sbox);
-		ShiftRows(current_block,Forward);
-		MixColumns(current_block,encrypt_matrix);
-		AddRoundKey(current_block, *current_key);
-		current_key = current_key->next;
-
-	}
-
-	SubBytes(current_block,sbox);
-	ShiftRows(current_block,Forward);
-	AddRoundKey(current_block, *current_key);
-}
-
-void aes::Decrypt(Block& current_block) {
-
-
-	Block* current_key = &key;
-	while (current_key->next != nullptr) current_key = current_key->next;
-	AddRoundKey(current_block, *current_key);
-
-	current_key = current_key->previous;
-
-	for (int inv_round = 0; inv_round < 13; inv_round++) {
-		ShiftRows(current_block, Reverse);
-		SubBytes(current_block, invbox);
-		AddRoundKey(current_block, *current_key);
-		MixColumns(current_block, decrypt_matrix);
 		current_key = current_key->previous;
+
+		for (int inv_round = 0; inv_round < 13; inv_round++) {
+			ShiftRows(*current_block, Reverse);
+			SubBytes(*current_block, invbox);
+			AddRoundKey(*current_block, *current_key);
+			MixColumns(*current_block, decrypt_matrix);
+			current_key = current_key->previous;
+		}
+
+		ShiftRows(*current_block, Reverse);
+		SubBytes(*current_block, invbox);
+		AddRoundKey(*current_block, *current_key);
+
+		current_block = current_block->next;
 	}
-
-	ShiftRows(current_block, Reverse);
-	SubBytes(current_block, invbox);
-	AddRoundKey(current_block, *current_key);
-
 }
 
 void aes::GenerateFile(char* path) {
