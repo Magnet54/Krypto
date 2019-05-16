@@ -13,15 +13,31 @@ aes::aes(char* path,uint8_t* raw_key) {
 		(istreambuf_iterator<char>(raw_data)),
 		(istreambuf_iterator<char>()));
 
-	data.previous = nullptr;
-	for (int i = 0; i < DIM*DIM; i++) {
-		data.plaintext[i % DIM][i/DIM] = bytes[i];
+	bytes_nb = bytes.size();
+	cout << bytes_nb << endl;
+
+	Block* current_block = &data;
+	current_block->previous = nullptr;
+	vector<char>::iterator it;
+	int i = 0;
+	for (it = bytes.begin(); it != bytes.end(); it++) {
+		current_block->plaintext[i%DIM][i / DIM] = *it;
+
+		i++;
+		if (i >= DIM * DIM) {
+			i = 0;
+			current_block->next = new Block;
+			current_block = current_block->next;
+		}
 	}
 
+	current_block->next = nullptr;
+
+	bytes.clear();
 	key.previous = nullptr;
 	Block* current_key = &key;
 
-	for (int key_block_nb = 1; key_block_nb <= 14; key_block_nb++) {
+	for (int key_nb = 1; key_nb <= 14; key_nb++) {
 		current_key->next = new Block;
 		current_key->next->previous = current_key;
 		current_key = current_key->next;
@@ -43,6 +59,8 @@ aes::aes(char* path,uint8_t* raw_key) {
 
 	cout << "Le fichier a été chargé" << endl;
 
+	GenerateKey();
+
 
 }
 
@@ -58,90 +76,100 @@ void aes::GenerateKey() {
 	Block* current_key = (key.next->next);
 
 	for (int block_nb = 3; block_nb <= 15; block_nb++) {
-		cout << "Bloc n" << block_nb << endl;
 		KeyExpansion(*current_key, block_nb);
 		current_key = current_key->next;
 
 	}
-	cout << "Clé générée" << endl;
-
-	current_key = &key;
-	Block test;
-	uint8_t array[DIM];
-	//GetWord(current_key, 8, 3, array);
-	//RotWord(array);
-	//SubWord(array, sbox);
-	//array[0] ^= rcon[(9 - 1) / 8];
-	//ReplaceColumn(test, 0, array);
-	ofstream fichier("C:\\Temp\\key", ios::out | ios::trunc | ios::binary);
-	for (int i = 0; i < 15; i++) {
-		for (int j = 0; j < 4; j++) {
-			fichier << current_key->plaintext[0][j] 
-				<< current_key->plaintext[1][j] 
-				<< current_key->plaintext[2][j] 
-				<< current_key->plaintext[3][j];
-		}
-		current_key = current_key->next;
-	}
-
-	fichier.close();
 
 
 }
 
-void aes::Encrypt() {
+void aes::LaunchEncryption() {
 
-	cout << "Lancement de la procédure de cryptage" << endl;
+	cout << "Lancement du cryptage" << endl;
+
+	Block* current_block = &data;
+
+	while (current_block->next != nullptr) {
+		Encrypt(*current_block);
+		current_block = current_block->next;
+	}
+
+}
+
+void aes::LaunchDecryption() {
+
+	cout << "Lancement du decryptage" << endl;
+
+	Block* current_block = &data;
+
+	while (current_block->next != nullptr) {
+		Decrypt(*current_block);
+		current_block = current_block->next;
+	}
+}
+
+void aes::Encrypt(Block& current_block) {
+
+
 
 	Block* current_key = &key;
-	AddRoundKey(data, *current_key);
+	AddRoundKey(current_block, *current_key);
 	current_key = current_key->next;
 
 
 	for (int round = 0; round < 13;round++) {
 		
-		cout << "Ronde: " << round << endl;
-		SubBytes(data, sbox);
-		ShiftRows(data,Forward);
-		MixColumns(data,encrypt_matrix);
-		AddRoundKey(data, *current_key);
+		SubBytes(current_block, sbox);
+		ShiftRows(current_block,Forward);
+		MixColumns(current_block,encrypt_matrix);
+		AddRoundKey(current_block, *current_key);
 		current_key = current_key->next;
 
 	}
 
-	SubBytes(data,sbox);
-	ShiftRows(data,Forward);
-	AddRoundKey(data, *current_key);
+	SubBytes(current_block,sbox);
+	ShiftRows(current_block,Forward);
+	AddRoundKey(current_block, *current_key);
 }
 
-void aes::Decrypt() {
-	cout << "Lancement de la procédure de decryptage" << endl;
+void aes::Decrypt(Block& current_block) {
+
 
 	Block* current_key = &key;
 	while (current_key->next != nullptr) current_key = current_key->next;
-	AddRoundKey(data, *current_key);
+	AddRoundKey(current_block, *current_key);
 
 	current_key = current_key->previous;
 
 	for (int inv_round = 0; inv_round < 13; inv_round++) {
-		ShiftRows(data, Reverse);
-		SubBytes(data, invbox);
-		AddRoundKey(data, *current_key);
-		MixColumns(data, decrypt_matrix);
+		ShiftRows(current_block, Reverse);
+		SubBytes(current_block, invbox);
+		AddRoundKey(current_block, *current_key);
+		MixColumns(current_block, decrypt_matrix);
 		current_key = current_key->previous;
 	}
 
-	ShiftRows(data, Reverse);
-	SubBytes(data, invbox);
-	AddRoundKey(data, *current_key);
+	ShiftRows(current_block, Reverse);
+	SubBytes(current_block, invbox);
+	AddRoundKey(current_block, *current_key);
 
 }
 
 void aes::GenerateFile(char* path) {
 	ofstream encrypted_file(path, ios::out | ios::trunc | ios::binary);
-	for (int i = 0; i < DIM*DIM; i++) {
-		encrypted_file << data.plaintext[i%DIM][i / DIM];
+	Block* current_block = &data;
+	int bytes_count = bytes_nb;
+
+	while (current_block!=nullptr)
+	{
+		for (int i = 0; i < DIM*DIM; i++) {
+			if((bytes_count--)>0) encrypted_file << current_block->plaintext[i%DIM][i / DIM];
+		}
+
+		current_block = current_block->next;
 	}
+
 
 	encrypted_file.close();
 }

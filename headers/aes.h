@@ -20,22 +20,18 @@ typedef Block Block;
 class aes{
 	
 public:
+
 	aes(char* path,uint8_t* key);
 	~aes();
-	void Encrypt();
-	void Decrypt();
+	void Encrypt(Block& current_block);
+	void LaunchEncryption();
+	void Decrypt(Block& current_block);
+	void LaunchDecryption();
 	void GenerateKey();
 	void GenerateFile(char* path);
 
 private:
-	/*
-	Rotate_col();
-	SubBytes();
-	ShiftRows();
-	MixColumns();
-	AddRoundKey();
-	*/
-
+	int bytes_nb;
 	Block key;
 	Block data;
 

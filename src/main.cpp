@@ -49,11 +49,12 @@ int main() {
 		0x18,0x19,0x1a,0x1b,
 		0x1c,0x1d,0x1e,0x1f };
 
-	aes Test("C:\\input", key);
+	aes Test("C:\\arret.pdf", key);
 	Test.GenerateKey();
-	Test.Encrypt();
-	Test.Decrypt();
-	Test.GenerateFile("C:\\Temp\\encrypt.pdf");
+	Test.LaunchEncryption();
+	Test.GenerateFile("C:\\Temp\\encrypted.pdf");
+	Test.LaunchDecryption();
+	Test.GenerateFile("C:\\Temp\\decrypted.pdf");
 	//system("pause");
 	return 0;
 }
