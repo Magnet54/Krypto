@@ -9,20 +9,23 @@ using namespace std;
 
 aes::aes(char* path,uint8_t* raw_key) {
 	ifstream raw_data(path, ios::binary);
-	vector<char> bytes(
-		(istreambuf_iterator<char>(raw_data)),
-		(istreambuf_iterator<char>()));
+	
+	if (!raw_data) {
+		cerr << "Erreur: Impossible d'ouvrir le fichier" << endl;
+		exit(EXIT_FAILURE);
+	}
 
-	bytes_nb = bytes.size();
-	cout << bytes_nb << endl;
 
 	Block* current_block = &data;
 	current_block->previous = nullptr;
 	vector<char>::iterator it;
 	int i = 0;
-	for (it = bytes.begin(); it != bytes.end(); it++) {
-		current_block->plaintext[i%DIM][i / DIM] = *it;
+	bytes_nb = 0;
+	char element;
 
+	while (raw_data.get(element)){
+		current_block->plaintext[i%DIM][i / DIM] = element;
+		bytes_nb++;
 		i++;
 		if (i >= DIM * DIM) {
 			i = 0;
@@ -31,9 +34,9 @@ aes::aes(char* path,uint8_t* raw_key) {
 		}
 	}
 
+	cout << bytes_nb << endl;
 	current_block->next = nullptr;
 
-	bytes.clear();
 	key.previous = nullptr;
 	Block* current_key = &key;
 

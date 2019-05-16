@@ -36,26 +36,21 @@ void ShiftRows(Block& input,encrypt_way way) {
 uint8_t gf_multiplication(uint8_t mds_matrix_value, uint8_t x) {
 
 	uint8_t result = 0;
-
 	for (int position = 0; position < 8; position++) {
 
 		if ((x & 1) != 0) {
 			result ^= mds_matrix_value;
-
 		}
 
 		bool high_bit = (mds_matrix_value & 0x80) != 0;
 		mds_matrix_value <<= 1;
 
 		if (high_bit) {
-
 			mds_matrix_value ^= 0x11B;
 		}
-
 		x >>= 1;
 
 	}
-
 	return result;
 
 }
