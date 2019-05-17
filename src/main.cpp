@@ -19,9 +19,9 @@ int main() {
 
 	aes Test("C:\\titre.wmv", key);
 	Test.LaunchEncryption();
-	Test.GenerateFile("C:\\Temp\\encrypted.wmv");
-	Test.LaunchDecryption();
-	Test.GenerateFile("C:\\Temp\\decrypted.wmv");
+	Test.GenerateFile("C:\\Temp\\cat_encrypted.png");
+	//Test.LaunchDecryption();
+	//Test.GenerateFile("C:\\Temp\\decrypted.PNG");
 	//system("pause");
 	return 0;
 }

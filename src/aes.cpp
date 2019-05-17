@@ -20,13 +20,16 @@ aes::aes(char* path,uint8_t* raw_key) {
 	Block* current_block = &data;
 	current_block->previous = nullptr;
 	vector<char>::iterator it;
-	int i = 0;
-	bytes_nb = 0;
+
+	raw_data.seekg(0, raw_data.end);
+	bytes_nb = raw_data.tellg();
+	raw_data.seekg(0, raw_data.beg);
+	/*
 	char element;
 
 	while (raw_data.get(element)){
 		current_block->plaintext[i%DIM][i / DIM] = element;
-		bytes_nb++;
+		//bytes_nb++;
 		i++;
 		if (i >= DIM * DIM) {
 			i = 0;
@@ -34,6 +37,32 @@ aes::aes(char* path,uint8_t* raw_key) {
 			current_block = current_block->next;
 		}
 	}
+	*/
+
+	char buffer[1024];
+	int i,n=0;
+	int size = 1024;
+	while (raw_data.read(buffer, size)) {
+		i = 0;
+		while (i < size) {
+			current_block->plaintext[n%DIM][n/DIM] = buffer[i+n];
+			//current_block->plaintext[1][n/DIM] = buffer[i+n];
+			//current_block->plaintext[2][n/DIM] = buffer[i+2];
+			//current_block->plaintext[3][n/DIM] = buffer[i+3];
+			n++;
+
+			if (n>=DIM*DIM) {
+				i+=DIM*DIM;
+				n = 0;
+				current_block->next = new Block;
+				current_block = current_block->next;
+			}
+		}
+
+		if ((1024+raw_data.tellg()) > bytes_nb && raw_data.tellg()!=bytes_nb) size = bytes_nb - raw_data.tellg();
+
+	}
+	
 
 	cout << bytes_nb << endl;
 	current_block->next = nullptr;
