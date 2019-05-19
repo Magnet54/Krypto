@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 #define DIM 4
+#define BLOCK_ROWS 1024
 
 enum encrypt_way {
 	Forward,
@@ -8,10 +9,10 @@ enum encrypt_way {
 };
 
 struct Block{
-
-	uint8_t plaintext[DIM][DIM];
 	Block *previous;
 	Block *next;
+	uint8_t plaintext[BLOCK_ROWS][DIM];
+
 
 };
 
@@ -23,17 +24,17 @@ public:
 
 	aes(char* path,uint8_t* key);
 	~aes();
-	void Encrypt(Block* current_block,Block* stop_block);
+	void Encrypt(Block* begin_block,Block* stop_block);
 	void LaunchEncryption();
-	void Decrypt(Block* current_block,Block* stop_block);
+	void Decrypt(Block* begin_block,Block* stop_block);
 	void LaunchDecryption();
 	void GenerateKey();
 	void GenerateFile(char* path);
 
 private:
 	int bytes_nb;
-	Block key;
-	Block data;
+	uint8_t key[DIM * 15][DIM];
+	Block* data;
 
 };
 

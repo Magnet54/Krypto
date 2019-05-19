@@ -16,32 +16,34 @@ void SubWord(uint8_t* row,uint8_t *box) {
 	}
 }
 
-void ReplaceColumn(Block& input,int column_nb, uint8_t* values) {
+void ReplaceColumn(uint8_t input[][4],int column_nb, uint8_t* values) {
 	for (int i = 0; i < DIM; i++) {
-		input.plaintext[i][column_nb] = values[i];
+		input[i][column_nb] = values[i];
 	}
 }
 
 //Find & put in array_temp column word_nb using random block position
-void GetWord(Block* current_block, int word_nb, int block_nb,uint8_t* array_temp) {
+void GetWord(uint8_t current_block[][4], int word_nb, int block_nb,uint8_t* array_temp) {
+	int block_on_left=0;
 	while(word_nb < ((block_nb-1)*DIM)+1) {
-		current_block = current_block->previous;
+		//current_block = current_block->previous;
 		block_nb--;
+		block_on_left++;
 	}
 
 	for (int i = 0; i < DIM; i++) {
-		array_temp[i] = current_block->plaintext[i][(word_nb-1)%DIM];
+		array_temp[i] = current_block[i-block_on_left*DIM][(word_nb-1)%DIM];
 	}
 }
 
-void KeyExpansion(Block& input, int block_nb) {
+void KeyExpansion(uint8_t input[][4], int block_nb) {
 	int word_nb=(block_nb-1)*DIM+1;
 	uint8_t array_temp[4];
 	uint8_t second_array_temp[4];
 	while (word_nb <= block_nb*DIM) {
 
-		GetWord(&input, word_nb - 1, block_nb, array_temp);
-		GetWord(&input, word_nb - 8, block_nb, second_array_temp);
+		GetWord(input, word_nb - 1, block_nb, array_temp);
+		GetWord(input, word_nb - 8, block_nb, second_array_temp);
 		//First of 2 blocks
 		if ((word_nb -1)% (DIM * 2) == 0) {
 

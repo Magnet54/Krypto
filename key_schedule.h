@@ -22,8 +22,8 @@ static uint8_t rcon[256] = {
 	0x61, 0xc2, 0x9f, 0x25, 0x4a, 0x94, 0x33, 0x66, 0xcc, 0x83, 0x1d, 0x3a, 0x74, 0xe8, 0xcb, 0x8d
 };
 
-void KeyExpansion(Block& input, int block_nb);
-void GetWord(Block* current_block, int word_nb, int block_nb, uint8_t* array_temp);
-void ReplaceColumn(Block& input, int column_nb, uint8_t* values);
+void KeyExpansion(uint8_t input[][4], int block_nb);
+void GetWord(uint8_t current_block[][4], int word_nb, int block_nb, uint8_t* array_temp);
+void ReplaceColumn(uint8_t input[][4], int column_nb, uint8_t* values);
 void SubWord(uint8_t* row, uint8_t *box);
 void RotWord(uint8_t* row);
