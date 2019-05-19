@@ -3,7 +3,7 @@
 #include <iterator>
 #include <vector>
 #include <thread>
-#include "../key_schedule.h"
+#include "../headers/key_schedule.h"
 #include "../headers/core_functions.h"
 
 using namespace std;
@@ -29,6 +29,7 @@ aes::aes(char* path,uint8_t* raw_key) {
 	this->data = new Block;
 	Block* current_block = data;
 	current_block->previous = nullptr;
+	if (bytes_nb < size) size = bytes_nb;
 	while (raw_data.read(buffer, size)) {
 		pst = 0;
 		while (pst < size) {

@@ -1,4 +1,4 @@
-#include "key_schedule.h"
+#include "../headers/key_schedule.h"
 #include <iostream>
 
 void RotWord(uint8_t* row) {
@@ -26,7 +26,6 @@ void ReplaceColumn(uint8_t input[][4],int column_nb, uint8_t* values) {
 void GetWord(uint8_t current_block[][4], int word_nb, int block_nb,uint8_t* array_temp) {
 	int block_on_left=0;
 	while(word_nb < ((block_nb-1)*DIM)+1) {
-		//current_block = current_block->previous;
 		block_nb--;
 		block_on_left++;
 	}

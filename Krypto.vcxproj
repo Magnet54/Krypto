@@ -113,15 +113,15 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="core_functions.cpp" />
-    <ClCompile Include="key_schedule.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="src\aes.cpp" />
-    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\core_functions.cpp" />
+    <ClCompile Include="src\key_schedule.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="headers\aes.h" />
     <ClInclude Include="headers\core_functions.h" />
-    <ClInclude Include="key_schedule.h" />
+    <ClInclude Include="headers\key_schedule.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

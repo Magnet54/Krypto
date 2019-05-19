@@ -18,13 +18,13 @@
     <ClCompile Include="src\aes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="core_functions.cpp">
+    <ClCompile Include="src\core_functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="key_schedule.cpp">
+    <ClCompile Include="src\key_schedule.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -35,7 +35,7 @@
     <ClInclude Include="headers\core_functions.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="key_schedule.h">
+    <ClInclude Include="headers\key_schedule.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
