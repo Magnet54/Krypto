@@ -2,8 +2,11 @@
 #include <iostream>
 
 void SubBytes(uint8_t input[][4],uint8_t *box) {
-	for (int position = 0; position < DIM*DIM; position++) {
-		input[position%DIM][position / DIM] = box[input[position%DIM][position / DIM]];
+	for (int row= 0; row < DIM; row++) {
+		for(int column=0;column<DIM;column++){
+
+			input[row][column] = box[input[row][column]];
+		}
 	}
 }
 
@@ -59,11 +62,15 @@ void MixColumns(uint8_t input[][4],uint8_t matrix[][4]) {
 	uint8_t temp[4][4];
 
 
-	for (int i = 0; i < DIM*DIM; i++) {
-		temp[i%DIM][i / DIM] = gf_multiplication(matrix[i%DIM][0], input[0][i / DIM])
-			^ gf_multiplication(matrix[i%DIM][1], input[1][i / DIM])
-			^ gf_multiplication(matrix[i%DIM][2], input[2][i / DIM])
-			^ gf_multiplication(matrix[i%DIM][3], input[3][i / DIM]);
+	for (int i = 0; i < DIM; i++) {
+		for(int j=0;j<DIM;j++){
+
+		temp[i][j] = gf_multiplication(matrix[i][0], input[0][j])
+			^ gf_multiplication(matrix[i][1], input[1][j])
+			^ gf_multiplication(matrix[i][2], input[2][j])
+			^ gf_multiplication(matrix[i][3], input[3][j]);			
+		}
+
 
 	}
 
@@ -72,7 +79,10 @@ void MixColumns(uint8_t input[][4],uint8_t matrix[][4]) {
 }
 
 void AddRoundKey(uint8_t input[][4],uint8_t key[][4]) {
-	for (int i = 0; i < DIM*DIM; i++) {
-		input[i%DIM][i / DIM] ^= key[i%DIM][i / DIM];
+	for (int i = 0; i < DIM; i++) {
+		for(int j=0;j<DIM;j++){
+			input[i][j] ^= key[i][j];
+		}
+
 	}
 }

@@ -22,7 +22,7 @@ class aes{
 	
 public:
 
-	aes(char* path,uint8_t* key);
+	aes(char* path,const uint8_t* key);
 	~aes();
 	void Encrypt(Block* begin_block,Block* stop_block);
 	void LaunchEncryption();

@@ -3,11 +3,12 @@
 #include <iterator>
 #include <vector>
 #include <thread>
+#include <cstring>
 #include "../headers/key_schedule.h"
 #include "../headers/core_functions.h"
 
 using namespace std;
-aes::aes(char* path,uint8_t* raw_key) {
+aes::aes(char* path,const uint8_t* raw_key) {
 	ifstream raw_data(path, ios::binary);
 	
 	if (!raw_data) {
@@ -53,7 +54,6 @@ aes::aes(char* path,uint8_t* raw_key) {
 	}
 
 	current_block->next = nullptr;
-	int block_nb = 1;
 	int current_key = 0;
 	while (current_key < 2*DIM) {
 		for (int i = 0; i < DIM*DIM; i++) {
@@ -180,7 +180,7 @@ void aes::Encrypt(Block* begin_block,Block* stop_block) {
 
 	Block* current_block = begin_block;
 	int current_key;
-	while (current_block==begin_block || current_block != stop_block && current_block!=nullptr) {
+	while (current_block==begin_block || ( current_block != stop_block && current_block!=nullptr )) {
 		for (int cipher = 0; cipher < BLOCK_ROWS; cipher += DIM) {
 
 			current_key = 0;
@@ -213,7 +213,7 @@ void aes::Decrypt(Block* begin_block,Block* stop_block) {
 
 	int current_key;
 	Block* current_block = begin_block;
-	while (current_block == begin_block || current_block != stop_block && current_block != nullptr) {
+	while (current_block == begin_block || (current_block != stop_block && current_block != nullptr)) {
 		for (int cipher = 0; cipher < BLOCK_ROWS; cipher += DIM) {
 
 			current_key = 14*DIM;

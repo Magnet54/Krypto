@@ -7,12 +7,12 @@
 using namespace std;
 int main() {
 
-	char *key = "Password";
-	aes Test("example\\file.txt", (uint8_t*)key);
+	char *key = "DTSaUTSW";
+	aes Test("example/image.jpg", (uint8_t*)key);
 	Test.LaunchEncryption();
-	Test.GenerateFile("example\\file_encrypted.txt");
+	Test.GenerateFile("example/file_encrypted.jpg");
 	Test.LaunchDecryption();
-	Test.GenerateFile("example\\file_decrypted.txt");
+	Test.GenerateFile("example/file_decrypted.jpg");
 	//system("pause");
 	return 0;
 }
