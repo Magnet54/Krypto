@@ -7,7 +7,7 @@
 using namespace std;
 int main() {
 
-	char *key = "DTSaUTSW";
+	char *key = "password";
 	aes Test("example/image.jpg", (uint8_t*)key);
 	Test.LaunchEncryption();
 	Test.GenerateFile("example/file_encrypted.jpg");
