@@ -3,15 +3,17 @@
 #define DIM 4
 #define BLOCK_ROWS 1024
 
+
 enum encrypt_way {
-	Forward,
-	Reverse
+	Forward, //Encryption
+	Reverse //Decryption
 };
 
+//Data
 struct Block{
-	Block *previous;
+	Block *previous; //Linked to other blocks
 	Block *next;
-	uint8_t plaintext[BLOCK_ROWS][DIM];
+	uint8_t plaintext[BLOCK_ROWS][DIM]; //Size: adjustable Blocks_rows * ( 128bit matrix ) 
 
 
 };
@@ -24,12 +26,14 @@ public:
 
 	aes(char* path,const uint8_t* key);
 	~aes();
-	void Encrypt(Block* begin_block,Block* stop_block);
-	void LaunchEncryption();
+	void Encrypt(Block* begin_block,Block* stop_block); //Encrypt from begin_block to stop_block
+	void LaunchEncryption(); //Initialize full encryption of the document
+	
 	void Decrypt(Block* begin_block,Block* stop_block);
 	void LaunchDecryption();
-	void GenerateKey();
-	void GenerateFile(char* path);
+	
+	void GenerateKey(); //Set AES key
+	void GenerateFile(char* path); //Save
 
 private:
 	int bytes_nb;
@@ -38,6 +42,7 @@ private:
 
 };
 
+//Galois Field encryption matrix
 static uint8_t encrypt_matrix[4][4] = {
 {0x02,0x03,0x01,0x01},
 {0x01,0x02,0x03,0x01},
@@ -45,6 +50,7 @@ static uint8_t encrypt_matrix[4][4] = {
 {0x03,0x01,0x01,0x02}
 };
 
+//Galois Field decryption matrix
 static uint8_t decrypt_matrix[4][4] = {
 {0x0e,0x0b,0x0d,0x09},
 {0x09,0x0e,0x0b,0x0d},
