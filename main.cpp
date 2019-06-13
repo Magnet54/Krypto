@@ -8,12 +8,13 @@ using namespace std;
 int main() {
 
 	char *key = "password";
-	aes Test("example/image.jpg", (uint8_t*)key);
+	
+	aes Test("example/file.txt", (uint8_t*)key);
 	Test.LaunchEncryption();
-	Test.GenerateFile("example/file_encrypted.jpg");
+	Test.GenerateFile("example/file_encrypted.txt");
 	Test.LaunchDecryption();
-	Test.GenerateFile("example/file_decrypted.jpg");
-	//system("pause");
+	Test.GenerateFile("example/file_decrypted.txt");
+	
 	return 0;
 }
 
