@@ -32,7 +32,7 @@ public:
 	void Decrypt(Block* begin_block,Block* stop_block);
 	void LaunchDecryption();
 	
-	void GenerateKey(); //Set AES key
+	void GenerateKey(); //Set AES key (key schedule)
 	void GenerateFile(char* path); //Save
 
 private:
