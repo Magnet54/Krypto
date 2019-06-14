@@ -8,33 +8,35 @@
 #include "../headers/core_functions.h"
 
 using namespace std;
+
 aes::aes(char* path,const uint8_t* raw_key) {
 	ifstream raw_data(path, ios::binary);
 	
 	if (!raw_data) {
-		cerr << "Erreur: Impossible d'ouvrir le fichier" << endl;
+		cerr << "Error: cannot open file" << endl;
 		exit(EXIT_FAILURE);
 	}
 
-
-	vector<char>::iterator it;
-
+	//Get file size
 	raw_data.seekg(0, raw_data.end);
 	bytes_nb = raw_data.tellg();
 	raw_data.seekg(0, raw_data.beg);
 
-	char buffer[1024];
-	int size = 1024;
+	int size = 1024;	//Buffer size
+	char buffer[size];	//Reading buffer
 	int n = 0;
 	int pst,block_pst=0;
+	
 	this->data = new Block;
 	Block* current_block = data;
 	current_block->previous = nullptr;
-	if (bytes_nb < size) size = bytes_nb;
+	
+	if (bytes_nb < size) size = bytes_nb;	//For files < 1024 bytes
+	
 	while (raw_data.read(buffer, size)) {
 		pst = 0;
 		while (pst < size) {
-			current_block->plaintext[block_pst+(n%DIM)][n/DIM] = buffer[pst+n];
+			current_block->plaintext[block_pst+(n%DIM)][n/DIM] = buffer[pst+n];	//Write file data in memory
 			n++;
 
 			if (n>=DIM*DIM) {
@@ -49,10 +51,12 @@ aes::aes(char* path,const uint8_t* raw_key) {
 			}
 		}
 
-		if ((1024+raw_data.tellg()) > bytes_nb && raw_data.tellg()!=bytes_nb) size = bytes_nb - raw_data.tellg();
+		//Avoid buffer overflow
+		if ((size+raw_data.tellg()) > bytes_nb && raw_data.tellg()!=bytes_nb) size = bytes_nb - raw_data.tellg();
 
 	}
-
+	
+	//Generate first 2 blocks of the key using user password (raw key)
 	current_block->next = nullptr;
 	int current_key = 0;
 	while (current_key < 2*DIM) {
@@ -67,7 +71,7 @@ aes::aes(char* path,const uint8_t* raw_key) {
 
 	raw_data.close();
 
-	cout << "Le fichier a ete charge" << endl;
+	cout << "File successfully loaded" << endl;
 
 	GenerateKey();
 
@@ -88,7 +92,7 @@ aes::~aes() {
 }
 
 void aes::GenerateKey() {
-	cout << "Generation de la cle" << endl;
+	cout << "Generating key" << endl;
 
 	for (int block_nb = 3; block_nb <= 15; block_nb++) {
 		KeyExpansion(&key[(block_nb-1)*DIM], block_nb);
@@ -97,10 +101,16 @@ void aes::GenerateKey() {
 
 }
 
+/*
+	LaunchEncryption() initiates document encryption 
+	by dividing data into multiple block lists for multithreading
+*/
 void aes::LaunchEncryption() {
-	cout << "Lancement du cryptage " << endl;
+	cout << "Launching encryption" << endl;
+	
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = chrono::system_clock::now();
+	
 	int threads_capability = thread::hardware_concurrency();
 	if (threads_capability == 0) threads_capability = 1;
 
@@ -111,10 +121,10 @@ void aes::LaunchEncryption() {
 
 
 	vector<thread> threads_list;
-	//thread threads_list[threads];
 	Block* stop_block=this->data;
 	Block* initial_block = this->data;
 	int block_nb;
+	
 	for (int i = 0; i < threads; i++) {
 		block_nb = 0;
 		while (block_nb < blocks_per_thread && stop_block->next!=nullptr) {
@@ -129,8 +139,9 @@ void aes::LaunchEncryption() {
 		threads_list[i].join();
 
 	}
+	
 	end = chrono::system_clock::now();
-	cout << "Temps cryptage: "<< std::chrono::duration_cast<std::chrono::seconds>
+	cout << "Encryption time: "<< std::chrono::duration_cast<std::chrono::seconds>
 		(end - start).count() << endl;
 
 }
