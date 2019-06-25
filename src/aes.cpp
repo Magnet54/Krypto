@@ -116,7 +116,7 @@ void aes::LaunchEncryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 100) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 
@@ -158,7 +158,7 @@ void aes::LaunchDecryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 100) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;
