@@ -106,7 +106,7 @@ void aes::GenerateKey() {
 	by dividing data into multiple block lists for multithreading
 */
 void aes::LaunchEncryption() {
-	cout << "Launching encryption" << endl;
+	cout << "Initiating encryption" << endl;
 	
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = chrono::system_clock::now();
@@ -141,14 +141,14 @@ void aes::LaunchEncryption() {
 	}
 	
 	end = chrono::system_clock::now();
-	cout << "Encryption time: "<< std::chrono::duration_cast<std::chrono::seconds>
+	cout << "Time consumed during encryption: "<< std::chrono::duration_cast<std::chrono::seconds>
 		(end - start).count() << endl;
 
 }
 
 void aes::LaunchDecryption() {
 
-	cout << "Lancement du decryptage" << endl;
+	cout << "Initiating decryption" << endl;
 
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = chrono::system_clock::now();
@@ -183,7 +183,7 @@ void aes::LaunchDecryption() {
 	}
 
 	end = chrono::system_clock::now();
-	cout << "Temps cryptage: " << std::chrono::duration_cast<std::chrono::seconds>
+	cout << "Time consumed during decryption: " << std::chrono::duration_cast<std::chrono::seconds>
 		(end - start).count() << endl;
 }
 
@@ -250,7 +250,7 @@ void aes::Decrypt(Block* begin_block,Block* stop_block) {
 }
 
 void aes::GenerateFile(char* path) {
-	ofstream encrypted_file(path, ios::out | ios::trunc | ios::binary);
+	ofstream file(path, ios::out | ios::trunc | ios::binary);
 
 	char buffer[16];
 	Block* current_block = this->data;
@@ -264,10 +264,10 @@ void aes::GenerateFile(char* path) {
 		cipher++;
 
 		if (bytes_nb-bytes_written<16) {
-			encrypted_file.write(buffer, bytes_nb-bytes_written);
+			file.write(buffer, bytes_nb-bytes_written);
 			break;
 		}
-		encrypted_file.write(buffer, 16);
+		file.write(buffer, 16);
 		bytes_written += 16;
 		if (cipher*DIM >= BLOCK_ROWS) {
 			cipher = 0;
@@ -276,5 +276,5 @@ void aes::GenerateFile(char* path) {
 	}
 
 
-	encrypted_file.close();
+	file.close();
 }
