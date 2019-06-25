@@ -22,7 +22,7 @@ void ReplaceColumn(uint8_t input[][4],int column_nb, uint8_t* values) {
 	}
 }
 
-//Find & put in array_temp column word_nb using random block position
+//Find & put in array_temp column word_nb using block position
 void GetWord(uint8_t current_block[][4], int word_nb, int block_nb,uint8_t* array_temp) {
 	int block_on_left=0;
 	while(word_nb < ((block_nb-1)*DIM)+1) {
@@ -35,6 +35,7 @@ void GetWord(uint8_t current_block[][4], int word_nb, int block_nb,uint8_t* arra
 	}
 }
 
+//Main function
 void KeyExpansion(uint8_t input[][4], int block_nb) {
 	int word_nb=(block_nb-1)*DIM+1;
 	uint8_t array_temp[4];
@@ -43,7 +44,7 @@ void KeyExpansion(uint8_t input[][4], int block_nb) {
 
 		GetWord(input, word_nb - 1, block_nb, array_temp);
 		GetWord(input, word_nb - 8, block_nb, second_array_temp);
-		//First of 2 blocks
+		//First 2 blocks
 		if ((word_nb -1)% (DIM * 2) == 0) {
 
 			RotWord(array_temp);
