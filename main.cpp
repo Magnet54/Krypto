@@ -19,11 +19,11 @@ int main(int argc, char* argv[]) {
 	
 	int count;
 	for(count;count<argc;count++){
-		if(argv[count].compare('-e')==0){
+		if(strcmp(argv[count]'-e')==0){
 			process==Forward;
 			cout << "Encryption mode. Please enter the new encryption password" << endl;
 		}
-		else if(argv[count].compare('-d')==0){
+		else if(strcmp(argv[count],'-d')==0){
 			process==Reverse;
 			cout << "Decryption mode. Please enter the password for this file" << endl;
 		}else{
