@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
 		}else{
 			path=argv[count];
 		}
+	}
 	
 	aes Test(path, (uint8_t*)password);
 	Test.LaunchEncryption();
