@@ -31,7 +31,18 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	
-	cout << "Enter the key for this file
+	cout << "Password:";	
+	termios oldt;
+	tcgetattr(STDIN_FILENO, &oldt);
+	termios newt = oldt;
+	newt.c_lflag &= ~ECHO;
+	tcsetattr(STDIN_FILENO, TCSANOW, &newt);
+	
+	cin >> password;
+	
+	SetConsoleMode(hStdin, mode);
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+	
 	aes Test(path, (uint8_t*)password);
 	Test.LaunchEncryption();
 	Test.GenerateFile("example/file_encrypted.txt");
