@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iterator>
 #include <vector>
+#include <termios.h>
+#include <unistd.h>
 #include "headers/aes.h"
 
 using namespace std;
@@ -10,7 +12,8 @@ int main(int argc, char* argv[]) {
 	encrypt_way process;
 	char *password;
 	char *path;
-	if (argc!=5) {
+	
+	if (argc!=3) {
 		cout << "Error: wrong arguments" << endl;
 	}
 	
@@ -18,17 +21,17 @@ int main(int argc, char* argv[]) {
 	for(count;count<argc;count++){
 		if(argv[count].compare('-e')==0){
 			process==Forward;
+			cout << "Encryption mode. Please enter the new encryption password" << endl;
 		}
 		else if(argv[count].compare('-d')==0){
 			process==Reverse;
-		}
-		else if(argv[count].compare('-p')==0){
-			password=argv[count+1];
+			cout << "Decryption mode. Please enter the password for this file" << endl;
 		}else{
 			path=argv[count];
 		}
 	}
 	
+	cout << "Enter the key for this file
 	aes Test(path, (uint8_t*)password);
 	Test.LaunchEncryption();
 	Test.GenerateFile("example/file_encrypted.txt");
