@@ -1,3 +1,0 @@
-Roses are red,
-Violets are blue,
-This file is not encrypted

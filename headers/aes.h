@@ -1,7 +1,9 @@
 #pragma once
 #include <cstdint>
+#include <string>
 #define DIM 4
 #define BLOCK_ROWS 1024
+#define HEADER_SIZE 3
 
 enum encrypt_way {
 	Forward,
@@ -18,22 +20,37 @@ struct Block{
 
 typedef Block Block;
 
-class aes{
+class BadPassword : public std::exception{
+
+public:
+	BadPassword() throw() : error("Bad password") {} 
+
+    virtual const char* what() const throw()
+	{
+		return error.c_str();
+	}
+
+private:
+	std::string error;
+};
+
+class Aes{
 	
 public:
 
-	aes(char* path,const uint8_t* key);
-	~aes();
+	Aes(const char* path,const uint8_t* password);
+	~Aes();
 	void Encrypt(Block* begin_block,Block* stop_block);
 	void LaunchEncryption();
 	void Decrypt(Block* begin_block,Block* stop_block);
 	void LaunchDecryption();
 	void GenerateKey();
-	void GenerateFile(char* path);
+	void GenerateFile(const char* path,bool post_treatment);
 
 private:
-	int bytes_nb;
+	long long int bytes_nb;
 	uint8_t key[DIM * 15][DIM];
+	uint8_t raw_key[DIM * 2][DIM];
 	Block* data;
 
 };
