@@ -39,11 +39,10 @@ Aes::Aes(const char* path,const uint8_t* password) {
 	if (bytes_nb < size) size = bytes_nb;
 
 
-
 	while (raw_data.read(buffer, size)) {
 		pst = 0;
 		while (pst < size) {
-			current_block->plaintext[block_pst+(n%DIM)][n/DIM] = buffer[pst+n];
+			current_block->plaintext[block_pst+(n%DIM)][n/DIM] = buffer[pst+n];	//Write file data in memory
 			n++;
 
 			if (n>=DIM*DIM) {
@@ -59,9 +58,12 @@ Aes::Aes(const char* path,const uint8_t* password) {
 			}
 		}
 
-		if ((1024+raw_data.tellg()) > bytes_nb && raw_data.tellg()!=bytes_nb) size = bytes_nb - raw_data.tellg();
+		//Avoid buffer overflow
+		if ((size+raw_data.tellg()) > bytes_nb && raw_data.tellg()!=bytes_nb) size = bytes_nb - raw_data.tellg();
 
 	}
+	
+	//Generate first 2 blocks of the key using user password (raw key)
 	current_block->next = nullptr;
 	int current_key = 0;
 	while (current_key < 2*DIM) {
@@ -78,6 +80,7 @@ Aes::Aes(const char* path,const uint8_t* password) {
 
 	raw_data.close();
 
+	cout << "File successfully loaded" << endl;
 
 	GenerateKey();
 
@@ -97,6 +100,7 @@ Aes::~Aes() {
 	}
 }
 
+<<<<<<< HEAD
 void Aes::GenerateKey() {
 	cout << "Generating key" << endl;
 
@@ -111,16 +115,16 @@ void Aes::LaunchEncryption() {
 	cout << "Launching encryption" << endl;
 	std::chrono::time_point<std::chrono::system_clock> start, end;
 	start = chrono::system_clock::now();
+	
 	int threads_capability = thread::hardware_concurrency();
 	if (threads_capability == 0) threads_capability = 1;
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 100) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;
-	//thread threads_list[threads];
 	Block* stop_block=this->data;
 	Block* initial_block = this->data;
 	int block_nb;
@@ -146,6 +150,7 @@ void Aes::LaunchEncryption() {
 		threads_list[i].join();
 
 	}
+	
 	end = chrono::system_clock::now();
 	cout << "Time taken: "<< std::chrono::duration_cast<std::chrono::seconds>
 		(end - start).count() << endl;
@@ -169,7 +174,7 @@ void Aes::LaunchDecryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 100) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;

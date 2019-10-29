@@ -5,15 +5,17 @@
 #define BLOCK_ROWS 1024
 #define HEADER_SIZE 3
 
+
 enum encrypt_way {
-	Forward,
-	Reverse
+	Forward, //Encryption
+	Reverse //Decryption
 };
 
+//Data
 struct Block{
-	Block *previous;
+	Block *previous; //Linked to other blocks
 	Block *next;
-	uint8_t plaintext[BLOCK_ROWS][DIM];
+	uint8_t plaintext[BLOCK_ROWS][DIM]; //Size: adjustable Blocks_rows * ( 128bit matrix ) 
 
 
 };
@@ -55,6 +57,7 @@ private:
 
 };
 
+//Galois Field encryption matrix
 static uint8_t encrypt_matrix[4][4] = {
 {0x02,0x03,0x01,0x01},
 {0x01,0x02,0x03,0x01},
@@ -62,6 +65,7 @@ static uint8_t encrypt_matrix[4][4] = {
 {0x03,0x01,0x01,0x02}
 };
 
+//Galois Field decryption matrix
 static uint8_t decrypt_matrix[4][4] = {
 {0x0e,0x0b,0x0d,0x09},
 {0x09,0x0e,0x0b,0x0d},
