@@ -1,0 +1,173 @@
+HEXEDIT(1)                                                                   General Commands Manual                                                                  HEXEDIT(1)
+
+[1mNAME[0m
+       hexedit - view and edit files in hexadecimal or in ASCII
+
+[1mSYNOPSIS[0m
+       [4mhexedit[24m [-s | --sector] [-m | --maximize] [-h | --help] [filename]
+
+[1mDESCRIPTION[0m
+       [4mhexedit[24m shows a file both in ASCII and in hexadecimal. The file can be a device as the file is read a piece at a time. You can modify the file and search through it.
+
+[1mOPTIONS[0m
+       [4m-s,[24m [4m--sector[0m
+              Format the display to have entire sectors.
+
+       [4m-m,[24m [4m--maximize[0m
+              Try to maximize the display.
+
+       [4m--color[0m
+              Display colors.  This feature is only available if your operating system supports it.
+
+       [4m-h,[24m [4m--help[0m
+              Show the usage.
+
+[1mCOMMANDS (quickly)[0m
+   [1mMoving[0m
+       <, > :  go to start/end of the file
+       Right:  next character
+       Left:   previous character
+       Down:   next line
+       Up:     previous line
+       Home:   beginning of line
+       End:    end of line
+       PUp:    page forward
+       PDown:  page backward
+
+   [1mMiscellaneous[0m
+       F2:     save
+       F3:     load file
+       F1:     help
+       Ctrl-L: redraw
+       Ctrl-Z: suspend
+       Ctrl-X: save and exit
+       Ctrl-C: exit without saving
+
+       Tab:    toggle hex/ascii
+       Return: go to
+       Backspace: undo previous character
+       Ctrl-U: undo all
+       Ctrl-S: search forward
+       Ctrl-R: search backward
+
+   [1mCut&Paste[0m
+       Ctrl-Space: set mark
+       Esc-W:  copy
+       Ctrl-Y: paste
+       Esc-Y:  paste into a file
+       Esc-I:  fill
+
+[1mCOMMANDS (full and detailed)[0m
+       o [4mRight-Arrow[24m, [4mLeft-Arrow[24m, [4mDown-Arrow[24m, [4mUp-Arrow[24m - move the cursor.
+       o [4mCtrl+F[24m, [4mCtrl+B[24m, [4mCtrl+N[24m, [4mCtrl+P[24m - move the cursor.
+       o [4mCtrl+Right-Arrow[24m, [4mCtrl+Left-Arrow[24m, [4mCtrl+Down-Arrow[24m, [4mCtrl+Up-Arrow[24m - move n times the cursor.
+       o [4mEsc+Right-Arrow[24m, [4mEsc+Left-Arrow[24m, [4mEsc+Down-Arrow[24m, [4mEsc+Up-Arrow[24m - move n times the cursor.
+       o [4mEsc+F[24m, [4mEsc+B[24m, [4mEsc+N[24m, [4mEsc+P[24m - move n times the cursor.
+       o [4mHome[24m, [4mCtrl+A[24m - go the beginning of the line.
+       o [4mEnd[24m, [4mCtrl+E[24m - go to the end of the line.
+       o [4mPage[24m [4mup[24m, [4mEsc+V[24m, [4mF5[24m - go up in the file by one page.
+       o [4mPage[24m [4mdown[24m, [4mCtrl+V[24m, [4mF6[24m - go down in the file by one page.
+       o [4m<[24m, [4mEsc+<[24m, [4mEsc+Home[24m - go to the beginning of the file.
+       o [4m>[24m, [4mEsc+>[24m, [4mEsc+End[24m - go to the end of the file (for regular files that have a size).
+       o [4mCtrl+Z[24m - suspend hexedit.
+       o [4mCtrl+U[24m, [4mCtrl+_[24m, [4mCtrl+/[24m - undo all (forget the modifications).
+       o [4mCtrl+Q[24m - read next input character and insert it (this is useful for inserting control characters and bound keys).
+       o [4mTab[24m, [4mCtrl+T[24m - toggle between ASCII and hexadecimal.
+       o [4m/[24m, [4mCtrl+S[24m - search forward (in ASCII or in hexadecimal, use [4mTAB[24m to change).
+       o [4mCtrl+R[24m - search backward.
+       o [4mCtrl+G[24m, [4mF4[24m - go to a position in the file.
+       o [4mReturn[24m - go to a sector in the file if [4m--sector[24m is used, otherwise go to a position in the file.
+       o [4mEsc+L[24m - display the page starting at the current cursor position.
+       o [4mF2[24m, [4mCtrl+W[24m - save the modifications.
+       o [4mF1[24m, [4mEsc+H[24m - help (show the man page).
+       o [4mCtrl+O[24m, [4mF3[24m - open another file
+       o [4mCtrl+L[24m - redisplay (refresh) the display (usefull when your terminal screws up).
+       o [4mBackspace[24m, [4mCtrl+H[24m - undo the modifications made on the previous byte.
+       o [4mEsc+Ctrl+H[24m - undo the modifications made on the previous bytes.
+       o [4mCtrl+Space[24m, [4mF9[24m - set mark where cursor is.
+       o [4mEsc+W[24m, [4mDelete[24m, [4mF7[24m - copy selected region.
+       o [4mCtrl+Y[24m, [4mInsert[24m, [4mF8[24m - paste (yank) previously copied region.
+       o [4mEsc+Y[24m, [4mF11[24m - save previously copied region to a file.
+       o [4mEsc+I[24m, [4mF12[24m - fill the selection with a string
+       o [4mEsc+T[24m - truncate the file at the current location
+       o [4mCtrl+C[24m - unconditional quit (without saving).
+       o [4mF10[24m, [4mCtrl+X[24m - quit.
+
+       For the [4mEsc[24m commands, it sometimes works to use [4mAlt[24m instead of [4mEsc[24m. Funny things here (especially for froggies :) egrave = Alt+H , ccedilla = Alt+G, Alt+Y = ugrave.
+
+   [1mModeline[0m
+       At  the  bottom of the display you have the modeline (copied from emacs). As in emacs, you have the indications --, ** and %% meaning unmodified, modified and read-only.
+       Then you have the name of the file you're currently editing. Next to it is the current position of the cursor in the file followed by the total file size. The total file
+       size isn't quite correct for devices.
+       While in --sector mode, it shows the sector the cursor is in.
+
+   [1mEditing[0m
+       You  can edit in ASCII or in hexadecimal. You can switch between the two with [4mTab[24m. When the file is read-only, you can't edit it. When trying to edit a read-only file, a
+       message (``File is read-only'') tells you it is non-writable.
+       The modifications are shown in bold until they are saved.  The modeline indicates whether you have modified the file or not.
+       When editing in hexadecimal, only [4m0[24m,[4m1[24m,...,[4m9[24m, [4ma[24m,[4mb[24m,...,[4mf[24m, [4mA[24m,[4mB[24m,...[4mF[24m are legal.  Other keys are unbound. The first time you hit an unbound key, the help pops up.   It  won't
+       pop again unless you call the help directly (with [4mF1[24m).
+       When  editing in ascii, you can find it difficult to enter characters like [4m/[24m which are bound to a function. The solution is to use the quoted insert function [4mCtrl+Q[24m, the
+       key after the quoted insert function is not processed by [4mhexedit[24m (like emacs' quoted-insert, or like the \ character in C).
+
+   [1mSearching[0m
+       You can search for a string in ASCII or in hexadecimal. You can switch between the two with [4mTab[24m. If the string is found, the cursor is moved  to  the  beginning  of  the
+       matching location. If the search failed, a message (``not found'') tells you so. You can cancel the search by pressing a key.
+       The search in hexadecimal is a bit confusing. You must give a hexadecimal string with an even number of characters. The search can then be done byte by byte. If you want
+       to search a long number (eg: a 32 bit number), you must know the internal representation of that number (little/big endian problem) and give it the way it is in  memory.
+       For  example,  on  an  Intel  processor (little endian), you must swap every bytes: 0x12345678 is written 0x78563412 in memory and that's the string you must give to the
+       search engine.
+       Before searching you are asked if you want to save the changes, if the file is edited.
+
+       For more sophisticated search, see Volker Schatz's patch at <http://www.volkerschatz.com/unix/homebrew.html#hexedit>.
+
+   [1mSelecting, copying, pasting, filling[0m
+       First, select the part of the buffer you want to copy: start setting the mark where you want. Then go to the end of the area you want to copy (you  can  use  the  go  to
+       function and the search functions). Then copy it. You can then paste the copied area in the current file or in another file.
+
+       You can also fill the selected area with a string or a character: start choosing the block you want to fill in (set mark then move to the end of the block), and call the
+       fill function ([4mF12[24m). [4mhexedit[24m ask you the string you want to fill the block with.
+       The code is not tuned for huge filling as it keeps the modifications in memory until you save them. That's why [4mhexedit[24m will warn you if you try to fill in a big block.
+
+       When the mark is set, the selection is shown in reverse mode.
+       Be aware that the copied area contains the modifications done at the time of the copy. But if you undo the modifications, it does not change the content of the copy buf‐
+       fer. It seems obvious but it's worth saying.
+
+   [1mScrolling[0m
+       The  scrolling is different whether you are in [4m--sector[24m mode or not. In normal mode, the scrolling is line by line. In sector mode, the scrolling is sector by sector. In
+       both modes, you can force the display to start at a given position using [4mEsc+L[24m.
+
+[1mSEE ALSO[0m
+       od(1), hdump(1), hexdump(1), bpe(1), hexed(1), beav(1).
+
+[1mAUTHOR[0m
+       Pixel (Pascal Rigaux) <pixel@rigaux.org>,
+       Home page is <http://rigaux.org/>.
+
+[1mUNRESTRICTIONS[0m
+       [4mhexedit[24m is Open Source; anyone may redistribute copies of [4mhexedit[24m to anyone under the terms stated in the GNU General Public License.
+
+       You can find [4mhexedit[24m at
+       <http://rigaux.org/hexedit-1.2.13.src.tgz> and
+       <http://rigaux.org/hexedit-1.2.13.bin.i386.dynamic.tgz>.
+
+[1mTODO[0m
+       Anything you think could be nice...
+
+[1mLIMITATIONS[0m
+       There are problems with the curses library given with Redhat 5.0 that make [4mhexedit[24m think the terminal is huge. The result is that hexedit is not usable.
+
+       The shortcuts work on some machines, and not on others. That's why there are many shortcuts for each function. The Ctrl+Arrows and the Alt+. do not  work  work  as  they
+       should most of the time. On SUNs, you must do Ctrl+V-Ctrl+V instead of Ctrl+V (!); and the Alt key is the diamond one.
+
+       While searching, it could be interesting to know which position the search has reached. It's always nice to see something moving to help waiting.
+
+       The hexadecimal search could be able to search modulo 4 bits instead of 8 bits.  Another feature could be to complete padd odd length hexadecimal searches with zeros.
+
+[1mBUGS[0m
+       I  have an example where the display is completly screwed up. It seems to be a bug in ncurses (or maybe in xterm and rxvt)?? Don't know if it's me using ncurses badly or
+       not... It seems to happen when [4mhexedit[24m leaves only one space at the end of the lines... If anyone has a (or the) solution, please tell me!
+
+       If you have any problem with the program (even a small one), please do report it to me. Remarks of any kind are also welcome.
+
+                                                                                  12 July 1998                                                                        HEXEDIT(1)

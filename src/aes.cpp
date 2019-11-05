@@ -33,6 +33,7 @@ Aes::Aes(const char* path,const uint8_t* password) {
 	int pst;
 	this->data = new Block;
 	Block* current_block = this->data;
+	Block* tmp_block;
 	current_block->previous = nullptr;
 	
 	//Small files (<1024kb)
@@ -51,8 +52,10 @@ Aes::Aes(const char* path,const uint8_t* password) {
 				n = 0;
 				if (block_pst >= BLOCK_ROWS) {
 					block_pst = 0;
+					tmp_block=current_block;
 					current_block->next = new Block;
 					current_block = current_block->next;
+					current_block->previous=tmp_block;
 					
 				}
 			}
@@ -77,7 +80,7 @@ Aes::Aes(const char* path,const uint8_t* password) {
 		current_key += DIM;
 	}
 
-
+	data->plaintext[DIM*2][0]= (uint8_t) (bytes_nb % 16);
 	raw_data.close();
 
 	cout << "File successfully loaded" << endl;
@@ -100,7 +103,6 @@ Aes::~Aes() {
 	}
 }
 
-<<<<<<< HEAD
 void Aes::GenerateKey() {
 	cout << "Generating key" << endl;
 
@@ -267,12 +269,12 @@ void Aes::Decrypt(Block* begin_block,Block* stop_block) {
 		//Check password
 		int block_row;
 		if(current_block->previous==nullptr){
-			for(int row=0;row<DIM*2;row++){
-				
-				block_row=row+HEADER_SIZE*DIM;
 
+			for(int row=0;row<(DIM*2);row++){
+
+				block_row=row+HEADER_SIZE*DIM;
 				for(int col=0;col<DIM;col++){
-					//cout << "raw key : " << (char) raw_key[row][col] << "Block key: " << (char)current_block->plaintext[block_row][col] << endl;
+
 					if(raw_key[row][col]!=current_block->plaintext[block_row][col]){
 						cerr << "Error: Bad password" << endl;
 						exit(EXIT_FAILURE);
@@ -292,12 +294,16 @@ void Aes::GenerateFile(const char* path,bool post_treatment = false) {
 	Block* current_block = this->data;
 	int cipher = 0;
 	long long int bytes_written = 0;
-	int remaining;
-	//Nouveau
+	long long int remaining;
+	uint8_t tail_bytes = data->plaintext[DIM*(HEADER_SIZE+2)][0];
+	uint8_t buffer_size=16;
+
+
 
 	if(post_treatment){
 		cipher=2*HEADER_SIZE;
-		bytes_nb-=HEADER_SIZE*DIM*DIM;
+		bytes_nb-=DIM*DIM*HEADER_SIZE+tail_bytes;
+
 
 	}else{
 
@@ -307,24 +313,23 @@ void Aes::GenerateFile(const char* path,bool post_treatment = false) {
 
 	while(bytes_written < bytes_nb){
 
-		long long int remaining=bytes_nb-bytes_written;
-		for (int n = 0; n < DIM*DIM; n++) {
+		remaining=bytes_nb-bytes_written;
+		if(post_treatment && remaining<16){
+
+			buffer_size=tail_bytes;
+		}
+
+
+		for (int n = 0; n < buffer_size; n++) {
 			buffer[n] = current_block->plaintext[cipher*DIM + (n%DIM)][n / DIM];
 		}
 
 		cipher++;
-		encrypted_file.write(buffer, 16);
-		bytes_written += 16;
 
 
+		encrypted_file.write(buffer, buffer_size);
+		bytes_written += buffer_size;
 
-		if(post_treatment && remaining<16){
-			for(int n=0;n<remaining;n++){
-				buffer[n]=current_block->plaintext[cipher*DIM + (n%DIM)][n / DIM];
-			}
-
-			break;
-		}
 		//Data block fully written
 		if (cipher*DIM >= BLOCK_ROWS) {
 			cipher = 0;
@@ -332,19 +337,6 @@ void Aes::GenerateFile(const char* path,bool post_treatment = false) {
 		}
 
 	}
-
-/*
-	//Write final block
-	if(bytes_nb != bytes_written){
-
-		int remaining= bytes_nb - bytes_written;
-		for(int n=0;n<remaining;n++){
-			buffer[n] = current_block->plaintext[cipher*DIM + (n%DIM)][n / DIM];
-		}
-		encrypted_file.write(buffer, remaining);
-
-	}
-*/
 
 	encrypted_file.close();
 }

@@ -58,7 +58,7 @@ int main(int argc, char *argv[]) {
 
 		//try{
 
-			Test.LaunchDecryption();
+		Test.LaunchDecryption();
 
 //		}catch(exception const& e){
 //			cout << e.what() << endl;
