@@ -83,7 +83,7 @@ Aes::Aes(const char* path,const uint8_t* password) {
 	data->plaintext[DIM*2][0]= (uint8_t) (bytes_nb % 16);
 	raw_data.close();
 
-	cout << "File successfully loaded" << endl;
+	cout << "File loaded" << endl;
 
 	GenerateKey();
 
@@ -302,7 +302,7 @@ void Aes::GenerateFile(const char* path,bool post_treatment = false) {
 
 	if(post_treatment){
 		cipher=2*HEADER_SIZE;
-		bytes_nb-=DIM*DIM*HEADER_SIZE+tail_bytes;
+		bytes_nb-=DIM*DIM*HEADER_SIZE + (16-tail_bytes) ;
 
 
 	}else{
@@ -314,6 +314,7 @@ void Aes::GenerateFile(const char* path,bool post_treatment = false) {
 	while(bytes_written < bytes_nb){
 
 		remaining=bytes_nb-bytes_written;
+
 		if(post_treatment && remaining<16){
 
 			buffer_size=tail_bytes;
