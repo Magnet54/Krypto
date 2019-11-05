@@ -1,5 +1,5 @@
 CC=g++
-CFLAGS='-g'
+CFLAGS='-O3'
 
 all: launcher clean
 
