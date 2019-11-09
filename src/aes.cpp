@@ -19,6 +19,7 @@ Aes::Aes(const char* path,const uint8_t* password) {
 		exit(EXIT_FAILURE);
 	}
 
+	cout << endl << "Loading file" << endl;
 
 	vector<char>::iterator it;
 
@@ -81,9 +82,11 @@ Aes::Aes(const char* path,const uint8_t* password) {
 	}
 
 	data->plaintext[DIM*2][0]= (uint8_t) (bytes_nb % 16);
+
+
+
 	raw_data.close();
 
-	cout << "File loaded" << endl;
 
 	GenerateKey();
 
@@ -123,7 +126,7 @@ void Aes::LaunchEncryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 100) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 10) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;
@@ -144,10 +147,15 @@ void Aes::LaunchEncryption() {
 			stop_block = stop_block->next;
 			block_nb++;
 		}
+		if(i==threads-1){
+
+			while (stop_block->next!=nullptr){
+				stop_block=stop_block->next;
+			}
+		}
 		threads_list.push_back(thread(&Aes::Encrypt,this,initial_block, stop_block->next));
 		initial_block = stop_block->next;
 	}
-
 	for (int i = 0; i < threads;i++) {
 		threads_list[i].join();
 
@@ -176,11 +184,10 @@ void Aes::LaunchDecryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 100) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 10) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;
-
 	int block_nb;
 	for (int i = 0; i < threads; i++) {
 
@@ -188,6 +195,13 @@ void Aes::LaunchDecryption() {
 		while (block_nb < blocks_per_thread && stop_block->next!=nullptr) {
 			stop_block =stop_block->next;
 			block_nb++;
+		}
+
+		if(i==threads-1){
+			
+			while (stop_block->next!=nullptr){
+				stop_block=stop_block->next;
+			}
 		}
 		threads_list.push_back(thread(&Aes::Decrypt, this, initial_block, stop_block->next));
 
@@ -302,7 +316,9 @@ void Aes::GenerateFile(const char* path,bool post_treatment = false) {
 
 	if(post_treatment){
 		cipher=2*HEADER_SIZE;
-		bytes_nb-=DIM*DIM*HEADER_SIZE + (16-tail_bytes) ;
+		bytes_nb-=DIM*DIM*HEADER_SIZE;
+
+		if(tail_bytes!=0) bytes_nb-= (16-tail_bytes) ;
 
 
 	}else{
