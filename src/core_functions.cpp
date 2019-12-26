@@ -1,4 +1,4 @@
-#include "../headers/core_functions.h"
+#include "./headers/core_functions.h"
 #include <iostream>
 
 void SubBytes(uint8_t input[][4],uint8_t *box) {
@@ -39,13 +39,14 @@ void ShiftRows(uint8_t input[][4],encrypt_way way) {
 uint8_t gf_multiplication(uint8_t mds_matrix_value, uint8_t x) {
 
 	uint8_t result = 0;
+	bool high_bit;
 	for (int position = 0; position < 8; position++) {
 
 		if ((x & 1) != 0) {
 			result ^= mds_matrix_value;
 		}
 
-		bool high_bit = (mds_matrix_value & 0x80) != 0;
+		high_bit = (mds_matrix_value & 0x80) != 0;
 		mds_matrix_value <<= 1;
 
 		if (high_bit) {
@@ -65,10 +66,10 @@ void MixColumns(uint8_t input[][4],uint8_t matrix[][4]) {
 	for (int i = 0; i < DIM; i++) {
 		for(int j=0;j<DIM;j++){
 
-		temp[i][j] = gf_multiplication(matrix[i][0], input[0][j])
-			^ gf_multiplication(matrix[i][1], input[1][j])
-			^ gf_multiplication(matrix[i][2], input[2][j])
-			^ gf_multiplication(matrix[i][3], input[3][j]);			
+			temp[i][j] = gf_multiplication(matrix[i][0], input[0][j])
+				^ gf_multiplication(matrix[i][1], input[1][j])
+				^ gf_multiplication(matrix[i][2], input[2][j])
+				^ gf_multiplication(matrix[i][3], input[3][j]);			
 		}
 
 
@@ -83,6 +84,7 @@ void AddRoundKey(uint8_t input[][4],uint8_t key[][4]) {
 		for(int j=0;j<DIM;j++){
 			input[i][j] ^= key[i][j];
 		}
+
 
 	}
 }

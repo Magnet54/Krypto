@@ -30,22 +30,27 @@ int main(int argc, char *argv[]) {
 		return 1;
 	}
 
-	cout << "Enter password:" << endl << "> ";
 	string input_password;
-	SetDisplayCin(false);
+
+	if(isatty(fileno(stdin))){
+		cout << "Enter password:" << endl << "> ";
+		SetDisplayCin(false);
+
+	}
+
 
 	cin >> input_password;
 
 	SetDisplayCin(true);
 
 	const char *key = input_password.c_str();
-	Aes Test(argv[2], (uint8_t*)key);
+	Aes Main(argv[2], (uint8_t*)key);
 	string filename(argv[2]);
 	bool post_treatment;
 
 	if(strcmp(argv[1], "-e")==0){
 
-		Test.LaunchEncryption();
+		Main.LaunchEncryption();
 		filename += ".encrypted";
 		post_treatment=false;
 
@@ -56,14 +61,7 @@ int main(int argc, char *argv[]) {
 		filename.erase(pst,filename.size());
 		post_treatment=true;
 
-		//try{
-
-		Test.LaunchDecryption();
-
-//		}catch(exception const& e){
-//			cout << e.what() << endl;
-//			return 1;
-//		}
+		Main.LaunchDecryption();
 
 	}else{
 		cout << "Error: unrecognized parameter" << endl;
@@ -71,7 +69,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	if(remove(argv[2])!=0) cout << "Error when deleting original file" << endl;
-	Test.GenerateFile(filename.c_str(),post_treatment);
+	Main.GenerateFile(filename.c_str(),post_treatment);
 
 	return 0;
 }

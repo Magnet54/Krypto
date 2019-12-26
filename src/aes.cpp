@@ -4,8 +4,8 @@
 #include <vector>
 #include <thread>
 #include <cstring>
-#include "../headers/key_schedule.h"
-#include "../headers/core_functions.h"
+#include "./headers/key_schedule.h"
+#include "./headers/core_functions.h"
 
 
 using namespace std;
@@ -126,7 +126,7 @@ void Aes::LaunchEncryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 10) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;
@@ -184,7 +184,7 @@ void Aes::LaunchDecryption() {
 
 	int blocks_per_thread = bytes_nb / (threads_capability*BLOCK_ROWS*DIM);
 
-	int threads = (blocks_per_thread > 10) ? threads_capability : 1;
+	int threads = (blocks_per_thread > 1) ? threads_capability : 1;
 	blocks_per_thread = bytes_nb / (threads*BLOCK_ROWS*DIM);
 
 	vector<thread> threads_list;
@@ -198,7 +198,7 @@ void Aes::LaunchDecryption() {
 		}
 
 		if(i==threads-1){
-			
+
 			while (stop_block->next!=nullptr){
 				stop_block=stop_block->next;
 			}
@@ -229,6 +229,7 @@ void Aes::Encrypt(Block* begin_block,Block* stop_block) {
 		for (int cipher = 0; cipher < BLOCK_ROWS; cipher += DIM) {
 
 			current_key = 0;
+
 			AddRoundKey(&current_block->plaintext[cipher], &key[current_key]);
 			current_key +=DIM;
 
