@@ -1,13 +1,13 @@
 CC=g++
 CFLAGS='-O3'
 
-all: launcher clean
+all: krypto clean
 
-launcher: main.o key_schedule.o core_functions.o aes.o
-	$(CC) $(CFLAGS) main.o key_schedule.o core_functions.o aes.o -o launcher -lpthread
+krypto: main.o key_schedule.o core_functions.o aes.o
+	$(CC) $(CFLAGS) main.o key_schedule.o core_functions.o aes.o -o krypto -lpthread
 
-main.o: main.cpp 
-	$(CC) $(CFLAGS) -c main.cpp
+main.o: src/main.cpp 
+	$(CC) $(CFLAGS) -c src/main.cpp
 
 key_schedule.o:
 	$(CC) $(CFLAGS) -c src/key_schedule.cpp -o ./key_schedule.o

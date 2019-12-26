@@ -1,4 +1,4 @@
-#include "./headers/key_schedule.h"
+#include "headers/key_schedule.h"
 #include <iostream>
 
 void RotWord(uint8_t* row) {

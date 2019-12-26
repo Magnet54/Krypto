@@ -1,6 +1,4 @@
 #pragma once
-//#include <iostream>
-//#define DIM 4
 #include "aes.h"
 
 static uint8_t rcon[256] = {

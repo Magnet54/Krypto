@@ -1,4 +1,4 @@
-#include "./headers/core_functions.h"
+#include "headers/core_functions.h"
 #include <iostream>
 
 void SubBytes(uint8_t input[][4],uint8_t *box) {

@@ -4,8 +4,8 @@
 #include <vector>
 #include <thread>
 #include <cstring>
-#include "./headers/key_schedule.h"
-#include "./headers/core_functions.h"
+#include "headers/key_schedule.h"
+#include "headers/core_functions.h"
 
 
 using namespace std;
