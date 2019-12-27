@@ -1,8 +1,6 @@
 # Krypto
 
-A small utility to encrypt/decrypt documents using AES-256
-
-
+A small utility using AES-256 to encrypt/decrypt documents
 ### Installation
 ```
 $ make
